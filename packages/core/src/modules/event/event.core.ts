@@ -1,6 +1,7 @@
 import { db } from '@oyster/db';
 
 import { job } from '@/infrastructure/bull/use-cases/job';
+import { deletePreEventNotification } from '@/modules/event/use-cases/pre-event-notification';
 import { ActivityType } from '@/modules/gamification/gamification.types';
 
 type CheckIntoEventInput = {
@@ -48,9 +49,22 @@ export async function checkIntoEvent({
  * - `event_registrations`
  * - `surveys`
  *
+ * And any scheduled bull jobs, such as:
+ * - `pre_event_notification`
+ *
  * @param id - ID of the event to delete.
  */
 export async function deleteEvent(id: string) {
+  const jobID = await db
+    .selectFrom('events')
+    .select('preEventNotificationJobId')
+    .where('id', '=', id)
+    .executeTakeFirst();
+
+  if (jobID) {
+    await deletePreEventNotification(jobID);
+  }
+
   await db.transaction().execute(async (trx) => {
     await trx
       .deleteFrom('completedActivities')
