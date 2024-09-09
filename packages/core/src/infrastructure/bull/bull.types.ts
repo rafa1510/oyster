@@ -40,6 +40,7 @@ export const BullQueue = {
   SLACK: 'slack',
   STUDENT: 'student',
   SWAG_PACK: 'swag_pack',
+  PRE_EVENT_NOTIFICATION: 'pre_event_notification',
 } as const;
 
 export type BullQueue = ExtractValue<typeof BullQueue>;
@@ -171,6 +172,15 @@ export const EventBullJob = z.discriminatedUnion('name', [
     name: z.literal('event.sync'),
     data: z.object({
       eventId: Event.shape.id,
+    }),
+  }),
+]);
+
+export const PreEventNotificationBullJob = z.discriminatedUnion('name', [
+  z.object({
+    name: z.literal('pre_event_notification.created'),
+    data: z.object({
+      eventID: Event.shape.id,
     }),
   }),
 ]);
@@ -581,6 +591,7 @@ export const BullJob = z.union([
   EmailMarketingBullJob,
   EventBullJob,
   FeedBullJob,
+  PreEventNotificationBullJob,
   GamificationBullJob,
   MemberEmailBullJob,
   NotificationBullJob,

@@ -7,6 +7,7 @@ dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+import { preEventNotificationWorker } from '@/modules/event/use-cases/pre-event-notification';
 import { airtableWorker } from './modules/airtable/airtable.core';
 import { applicationWorker } from './modules/application/application.core';
 import { oneTimeCodeWorker } from './modules/authentication/one-time-code.worker';
@@ -39,6 +40,7 @@ export function startBullWorkers(): void {
   applicationWorker.run();
   emailMarketingWorker.run();
   eventWorker.run();
+  preEventNotificationWorker.run();
   feedWorker.run();
   gamificationWorker.run();
   memberWorker.run();
