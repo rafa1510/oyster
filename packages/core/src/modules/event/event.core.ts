@@ -50,19 +50,19 @@ export async function checkIntoEvent({
  * - `surveys`
  *
  * And any scheduled bull jobs, such as:
- * - `pre_event_notification`
+ * - `event.notification`
  *
  * @param id - ID of the event to delete.
  */
 export async function deleteEvent(id: string) {
-  const jobID = await db
+  const preEventNotificationJobId = await db
     .selectFrom('events')
     .select('preEventNotificationJobId')
     .where('id', '=', id)
     .executeTakeFirst();
 
-  if (jobID) {
-    await deletePreEventNotification(jobID);
+  if (preEventNotificationJobId) {
+    await deletePreEventNotification(preEventNotificationJobId);
   }
 
   await db.transaction().execute(async (trx) => {

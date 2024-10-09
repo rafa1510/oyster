@@ -20,7 +20,7 @@ export async function createEvent({
   name,
   type,
 }: CreateEventInput) {
-  const eventID = id();
+  const eventId = id();
   const startDate = dayjs.tz(startTime, timezone);
 
   await db
@@ -29,7 +29,7 @@ export async function createEvent({
       description,
       endTime: dayjs.tz(endTime, timezone).toDate(),
       hidden: type === 'irl',
-      id: eventID,
+      id: eventId,
       name,
       startTime: startDate.toDate(),
       type,
@@ -37,7 +37,7 @@ export async function createEvent({
     .execute();
 
   await createPreEventNotificationJob({
-    eventID,
+    eventId,
     startDate,
     timezone,
   });
