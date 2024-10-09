@@ -55,14 +55,16 @@ export async function checkIntoEvent({
  * @param id - ID of the event to delete.
  */
 export async function deleteEvent(id: string) {
-  const preEventNotificationJobId = await db
+  const preEventNotificationJobData = await db
     .selectFrom('events')
     .select('preEventNotificationJobId')
     .where('id', '=', id)
     .executeTakeFirst();
 
-  if (preEventNotificationJobId) {
-    await deletePreEventNotification(preEventNotificationJobId);
+  if (preEventNotificationJobData?.preEventNotificationJobId) {
+    await deletePreEventNotification(
+      preEventNotificationJobData.preEventNotificationJobId
+    );
   }
 
   await db.transaction().execute(async (trx) => {
